@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0; background:#000; overflow:hidden; font-family:sans-serif;">
+
+<script>
+// ================= 文本 =================
+const texts = [
+  "我好想好想飞，逃离这个疯狂世界，那么多苦那么多累，那么多莫名的泪水。",
+  "昨天太近明天太远，默默聆听那黑夜，晚风吻尽荷花叶，任我醉倒在池边。",
+  "这是全天下最完美的阵容，我和你你和我。",
+  "生活太近梦想太远，午餐是吃饭还是吃面。",
+  "你是巨大的海洋，我是雨下在你身上，我失去了自己的形状。",
+  "麦搁我在这爱你你不爱我，我亲像风吹欲出头天。",
+  "心情好心情坏怎么开始怎么办，你有的不爽让我来分担。",
+  "我有我的路，有我的梦，梦中的那个世界，甘讲伊是一场空。",
+  "不打扰，是我的温柔。",
+  "有些人经过我身旁，住在我脑中，在我心底钻洞；有些人变成相片，堆在角落，灰尘像雪一般冰冻。",
+  "你的爱就像彩虹，我张开了手，却只能抱住风。",
+  "在无声之中你拉起了我的手，我怎么感觉整个黑夜在震动。",
+  "长大太慢老得太快，等得太久结果太难猜。",
+  "就算整个世界把我抛弃，而至少快乐伤心我自己决定。",
+  "我同意，可是我泪如雨下。",
+  "从前书包很满，装不下的梦就丢了一些。",
+  "我收藏恐惧，爱上恐惧，那就再没有恐惧。",
+  "真的痛总是来得很轻盈，没声音，从背后慢慢缓缓抱着我，就像你。",
+  "我们最后这么遗憾，我们最后这么无关。",
+  "想要征服的世界，始终都没有改变，黑暗中期待光线，生命有一种绝对。",
+  "逆风的方向更适合飞翔，我不怕千万人阻挡，只怕自己投降。",
+  "幸福不是多而是遗忘，能遗忘生命的烦恼忧伤。",
+  "如果说最后宜静不是嫁给了大雄，一生相信的执着一秒就崩落。",
+  "日子过得闷闷闷闷闷闷闷，七个闷一周七天都闷，爱情快来解救灵魂。",
+  "终于你身影消失在人海尽头，才发现笑着哭最痛。",
+  "等待后面是等待，更沉默的等待，然后咬紧了牙关，等待更多的等待。",
+  "你是空气但是好闻胜过了空气，你是阳光但是却能照进半夜里。",
+  "爱是一种天份还是一种天真？我不多想我不多问，让爱忘了分寸，让我奋不顾身！",
+  "飞过人间的无常才懂爱才是宝藏，不管世界变得怎么样只要有你就会是天堂。",
+  "青苹果是你野蛮的甜，牛奶与蜜是你的语言，沉默尤其是一种迷迭，当你无心轻轻地拒绝。",
+  "日记上写满了梦想，我决定要用这一生背诵！",
+  "世界纷纷扰扰喧喧闹闹什么是真实，为你跌跌撞撞傻傻笑笑买一杯果汁。",
+  "我练习过彩排过这个时候却又说不出口。",
+  "突然好想你，你会在哪里，过得快乐或委屈。",
+  "那一年只追逐自由，现在只能追逐着涨不停的石油。",
+  "我站在你左侧，却像隔着银河。",
+  "无猜无邪无私无瑕的友情无价，你是买不到的奢华，天涯有天风景有风浪花有花，再加上我有你就够啦。",
+  "在我的天顶大雨落不停，也不能改变到我的固执，永远等待那一日咱可以出头天。",
+  "当人心变成市场，当市场变成战场，战场埋葬多少理想。",
+  "浪漫只怕太慢，痛快只怕太快。",
+  "看爱过的人一一告别，做过的梦一一凋谢，只留下我独自残喘的千年。",
+  "有没有那么一张书签，停止那一天，最单纯的笑脸和最美那一年。",
+  "当烟雾随晨光飘散，枕畔的湖已风干，期待已退化成等待，而我告别了突然。",
+  "伤心的都忘记了，只记得这首笑忘歌，那一年天空很高风很清澈，从头到脚趾都快乐。",
+  "多遥远多想念多纠结多无法描写，疼痛和疯癫你都看不见。",
+  "命运偷走如果只留下结果，时间偷走初衷只留下了苦衷，你来过然后你走后，只留下星空。",
+  "我不愿让你一个人，一个人在人海浮沉，我不愿你独自走过风雨的时分。",
+  "如果我们不曾相遇，我会是在哪里。",
+  "后来的我们，为什么不能，从前的快乐。",
+  "我烂命一条走在路上，影子在地上，像我的慌张黏在脚下，抓着我不放。",
+  "咸鱼就算翻身还是只咸鱼，输得也诚恳，至少到最后我还有咸鱼不腐烂的自尊。",
+  "我骄傲的破坏，我痛恨的平凡，才想起那些是我最爱。让盛夏去贪玩，把残酷的未来，狂放到光年外。",
+  "摸不到的颜色是否叫彩虹，看不到的拥抱是否叫做微风。",
+  "一个人想着一个人，是否就叫寂寞。",
+  "也许我这一生，始终在追逐那颗九号球。",
+  "忘了哭忘了笑忘了大声咆哮，忘了问你是否把我忘掉。",
+  "青春是人生的实验课，错也错得很值得。",
+  "我们像一首最美丽的歌曲，变成两部悲伤的电影。",
+  "如果你快乐不是为我，会不会放手其实才是拥有。",
+  "最怕空气突然安静，最怕朋友突然的关心。",
+  "我们那么甜那么美那么相信，那么疯那么热烈的曾经。",
+  "你值得真正的快乐，你应该脱下你穿的保护色。",
+  "为什么失去了，还要被惩罚呢？能不能就让悲伤全部结束在此刻。",
+  "重新开始活着，重新开始活着。",
+  "活着其实很好，再吃一颗苹果。",
+  "每个渺小的理由，都困住自由。",
+  "有些事现在不做，一辈子都不会做了。",
+  "我没有任何天分，我却有梦的天真。",
+  "所谓的彩虹，不过就是光，只要心还透明，就能折射希望。",
+  "每当我迟疑，从不曾忘记，活在我心深处那顽固的自己。",
+  "那一年的舞台，没掌声没聚光，只有盆地边缘不认输的倔强。",
+  "然后呢，他们说你的心似乎痊愈了，也开始有个人为你守护着。",
+  "我们都要把自己照顾好，好到遗憾无法打扰。",
+  "好好的生活，好好的变老，好好假装我已经把你忘掉。",
+  "平凡的我们，也将回到平凡的世界。",
+  "你出现在我生命，从此我的人生重新定义。",
+  "是谁说蓝色就等于忧伤，你看看天空和海洋。",
+  "我不怕千万人阻挡，只怕自己投降。",
+  "这一生只愿只要平凡快乐，谁说这样不伟大呢。",
+  "我的声音在笑，泪在飙，电话那头的你可知道。",
+  "世界若是那么大，为何我要忘你无处逃。",
+  "梦中的那个世界，甘讲伊是一场空。",
+  "走过的叫足迹，走不到叫憧憬。",
+  "是你陪我走过一生一回，匆匆的人间。"
+];
+
+// ================= 颜色 =================
+const colors = [
+'#F0973E','#FFEC43','#FAAAAB','#FDE6E8',
+'#966869','#E6F6F7','#FEDDDF','#FD9FB5',
+'#FFB0C1','#FFE6EE','#CABFF5','#FFE4C2',
+'#FE9961','#FFF4D4','#FFD578','#FFB6AB',
+'#FBAE3F','#FCDCC2','#FEA84F','#CBD698',
+'#E46C80','#F5ECD0','#F7D0A3','#D9B8C5',
+'#FAE95C','#EDEF9B','#E6B798','#F9C364',
+'#F58D78','#FAF1BE','#5AC3D8','#D9EEF5',
+'#68B182','#E8E1C5','#99B8B8','#96B072',
+
+'#ed8282','#f7d08c','#fffd9d','#d19feb',
+'#ffabe5','#d8fff9','#c7f5ff','#d89fff',
+'#edb1f1','#d59bf6','#9896f1','#8ef6e4',
+'#fcffc1','#ff917b','#f469a9','#65ead1',
+
+'#ffdbf2','#ffa0d2','#ff78ae','#f54291',
+'#ffd7f1','#d87ca1','#b94e8a','#7d156d',
+'#e0f7fa','#b2ebf2','#80deea','#4dd0e1',
+'#c8e6c9','#81c784','#66bb6a','#43a047',
+
+'#fff2b2','#c1f0c1','#a2e4e4','#a2c5f2',
+'#c1f0c1','#a2e4e4','#a2c5f2','#d8c2f9',
+'#ff9aa2','#ffb7b2','#ffdd9e','#c1f0c1',
+'#ffa8a8','#ffc4a3','#ffe5a1','#d8c2f9'
+];
+
+let lastColor = null;
+
+// ================= 颜色逻辑 =================
+function isSimilar(c1, c2) {
+  if (!c1 || !c2) return false;
+
+  const hexToRgb = (hex) => [
+    parseInt(hex.substr(1,2),16),
+    parseInt(hex.substr(3,2),16),
+    parseInt(hex.substr(5,2),16)
+  ];
+
+  const [r1,g1,b1] = hexToRgb(c1);
+  const [r2,g2,b2] = hexToRgb(c2);
+
+  return Math.abs(r1-r2)+Math.abs(g1-g2)+Math.abs(b1-b2) < 80;
+}
+
+function tweakColor(hex) {
+  const r = parseInt(hex.substr(1,2),16);
+  const g = parseInt(hex.substr(3,2),16);
+  const b = parseInt(hex.substr(5,2),16);
+
+  const adjust = (v) => Math.min(255, Math.max(0, v + (Math.random()*20 - 10)));
+
+  return `rgb(${adjust(r)}, ${adjust(g)}, ${adjust(b)})`;
+}
+
+function getRandomColor() {
+  let color;
+  let attempts = 0;
+
+  do {
+    color = colors[Math.floor(Math.random() * colors.length)];
+    attempts++;
+  } while ((color === lastColor || isSimilar(color, lastColor)) && attempts < 10);
+
+  lastColor = color;
+  return tweakColor(color);
+}
+
+function getTextColor(bg) {
+  const rgb = bg.match(/\d+/g);
+  const brightness = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114)/1000;
+  return brightness > 150 ? "#333" : "#fff";
+}
+
+// ================= 网格 =================
+const COLS = 8;
+const ROWS = 6;
+
+let grid = [];
+let used = new Set();
+
+function initGrid() {
+  grid = [];
+  used.clear();
+  for (let r=0;r<ROWS;r++){
+    for (let c=0;c<COLS;c++){
+      grid.push({r,c});
+    }
+  }
+}
+
+function getGridPos() {
+  if (used.size >= grid.length) used.clear();
+
+  let i;
+  do {
+    i = Math.floor(Math.random()*grid.length);
+  } while (used.has(i));
+
+  used.add(i);
+
+  const {r,c} = grid[i];
+  const w = 100/COLS;
+  const h = 100/ROWS;
+
+  const offsetX = Math.random()*0.6+0.2;
+  const offsetY = Math.random()*0.6+0.2;
+
+  return {
+    left:(c+offsetX)*w,
+    top:(r+offsetY)*h
+  };
+}
+
+// ================= 拖动 =================
+function makeDraggable(el){
+  let dragging=false,ox=0,oy=0;
+
+  el.onmousedown=e=>{
+    dragging=true;
+    ox=e.clientX-el.offsetLeft;
+    oy=e.clientY-el.offsetTop;
+    el.style.zIndex=9999;
+    el.style.cursor="grabbing";
+  };
+
+  document.onmousemove=e=>{
+    if(!dragging)return;
+    el.style.left=e.clientX-ox+"px";
+    el.style.top=e.clientY-oy+"px";
+  };
+
+  document.onmouseup=()=>{
+    dragging=false;
+    el.style.cursor="grab";
+  };
+}
+
+// ================= 弹窗 =================
+function createPopup(){
+  const popup=document.createElement("div");
+  const bg=getRandomColor();
+
+  popup.textContent=texts[Math.floor(Math.random()*texts.length)];
+  popup.style.background=bg;
+  popup.style.color=getTextColor(bg);
+
+  const pos=getGridPos();
+
+  // ⭐ 防溢出
+  const maxLeft = 90; 
+  const maxTop = 90;
+
+  popup.style.position="fixed";
+  popup.style.left=Math.min(pos.left,maxLeft)+"vw";
+  popup.style.top=Math.min(pos.top,maxTop)+"vh";
+
+  popup.style.padding="12px 20px";
+  popup.style.borderRadius="12px";
+  popup.style.fontSize="18px";
+  popup.style.boxShadow="0 8px 20px rgba(0,0,0,0.4)";
+  popup.style.cursor="grab";
+
+  // ⭐ 不换行核心
+  popup.style.whiteSpace="nowrap";
+  popup.style.maxWidth="60vw";
+  popup.style.overflow="hidden";
+  popup.style.textOverflow="ellipsis";
+
+  popup.style.opacity="0";
+  popup.style.transform="translateY(10px)";
+  popup.style.transition="all 0.4s ease";
+  popup.style.userSelect="none";
+
+  document.body.appendChild(popup);
+
+  requestAnimationFrame(()=>{
+    popup.style.opacity="1";
+    popup.style.transform="translateY(0)";
+  });
+
+  makeDraggable(popup);
+
+  let moved=false;
+  popup.onmousedown=()=>moved=false;
+  popup.onmousemove=()=>moved=true;
+
+  popup.onclick=()=>{
+    if(moved)return;
+    popup.style.opacity="0";
+    popup.style.transform="scale(0.8)";
+    setTimeout(()=>popup.remove(),300);
+  };
+}
+
+// ================= 启动 =================
+function startPopups(){
+  initGrid();
+  let count=0;
+  const timer=setInterval(()=>{
+    createPopup();
+    if(++count>=150) clearInterval(timer);
+  },80);
+}
+
+// ================= 弹窗 =================
+function createConfirmModal(){
+  const overlay=document.createElement("div");
+  overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;";
+
+  const modal=document.createElement("div");
+  modal.style.cssText="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:24px;border-radius:16px;color:#fff;text-align:center;";
+
+  modal.innerHTML=`
+    <div style="font-size:24px;margin-bottom:20px;">✨ 那一天，那一刻，那个场景……</div>
+    <button id="ok" style="margin-right:10px;padding:8px 16px;border:none;border-radius:8px;">你出现在我生命</button>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector("#ok").onclick=()=>{
+    overlay.remove();
+    startPopups();
+  };
+  modal.querySelector("#no").onclick=()=>overlay.remove();
+}
+
+window.onload=createConfirmModal;
+
+</script>
+</body>
+</html>

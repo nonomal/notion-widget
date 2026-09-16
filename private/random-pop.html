@@ -1,0 +1,53 @@
+<!--
+ * @Author: HTT httishere0728@gmail.com
+ * @Date: 2026-04-17 09:52:09
+ * @LastEditors: HTT httishere0728@gmail.com
+ * @LastEditTime: 2026-04-17 09:54:31
+ * @FilePath: /notion/private/random-pop.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+// 要展示的文字列表
+const texts = [
+"第一次见你那天，新闻里说五十年一遇。",
+"希望应允承永远做世界上最快乐的橙子",
+"应允承，你不要等我。",
+"好，我答应你。",
+"夏天要过去了。",
+"只是一段烧杯刻度而已",
+"这个人间是再没有李决的了"
+];
+// 随机颜色列表
+const colors = ["#FFB6C1", "#ADD8E6", "#90EE90", "#FFFFE0", "#FFA07A", "#E6E6FA", "#FFDAB9"];
+// 创建弹窗函数
+function createPopup() {
+  const popup = document.createElement("div");
+  // 随机内容、颜色、位置和大小
+  popup.textContent = texts[Math.floor(Math.random() * texts.length)];
+  popup.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+  popup.style.position = "fixed";
+  popup.style.left = Math.random() * 80 + "vw";
+  popup.style.top = Math.random() * 80 + "vh";
+  popup.style.padding = "15px 25px";
+  popup.style.borderRadius = "8px";
+  popup.style.fontSize = "14px";
+  popup.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+  popup.style.cursor = "move";
+  // 添加到页面
+  document.body.appendChild(popup);
+  // 点击删除弹窗
+  popup.addEventListener("click", () => popup.remove());
+}
+// 批量创建弹窗，每50ms生成一个，共50个
+let count = 0;
+const interval = setInterval(() => {
+  createPopup();
+  count++;
+  if (count >= 150) clearInterval(interval);
+}, 50);
+</script>
+</body>
+</html>

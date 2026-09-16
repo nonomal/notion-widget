@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0; background:#000; overflow:hidden; font-family:sans-serif;">
+
+<script>
+// ================= 文本 =================
+const texts = [
+"第一次见你那天，新闻里说五十年一遇。",
+"希望应允承永远做世界上最快乐的橙子",
+"应允承，你不要等我。",
+"好，我答应你。",
+"夏天要过去了。",
+"只是一段烧杯刻度而已",
+"这个人间是再没有李决的了"
+];
+
+// ================= 颜色 =================
+const colors = [
+'#F0973E','#FFEC43','#FAAAAB','#FDE6E8',
+'#966869','#E6F6F7','#FEDDDF','#FD9FB5',
+'#FFB0C1','#FFE6EE','#CABFF5','#FFE4C2',
+'#FE9961','#FFF4D4','#FFD578','#FFB6AB',
+'#FBAE3F','#FCDCC2','#FEA84F','#CBD698',
+'#E46C80','#F5ECD0','#F7D0A3','#D9B8C5',
+'#FAE95C','#EDEF9B','#E6B798','#F9C364',
+'#F58D78','#FAF1BE','#5AC3D8','#D9EEF5',
+'#68B182','#E8E1C5','#99B8B8','#96B072',
+
+'#ed8282','#f7d08c','#fffd9d','#d19feb',
+'#ffabe5','#d8fff9','#c7f5ff','#d89fff',
+'#edb1f1','#d59bf6','#9896f1','#8ef6e4',
+'#fcffc1','#ff917b','#f469a9','#65ead1',
+
+'#ffdbf2','#ffa0d2','#ff78ae','#f54291',
+'#ffd7f1','#d87ca1','#b94e8a','#7d156d',
+'#e0f7fa','#b2ebf2','#80deea','#4dd0e1',
+'#c8e6c9','#81c784','#66bb6a','#43a047',
+
+'#fff2b2','#c1f0c1','#a2e4e4','#a2c5f2',
+'#c1f0c1','#a2e4e4','#a2c5f2','#d8c2f9',
+'#ff9aa2','#ffb7b2','#ffdd9e','#c1f0c1',
+'#ffa8a8','#ffc4a3','#ffe5a1','#d8c2f9'
+];
+
+let lastColor = null;
+
+// ================= 颜色逻辑 =================
+function isSimilar(c1, c2) {
+  if (!c1 || !c2) return false;
+
+  const hexToRgb = (hex) => [
+    parseInt(hex.substr(1,2),16),
+    parseInt(hex.substr(3,2),16),
+    parseInt(hex.substr(5,2),16)
+  ];
+
+  const [r1,g1,b1] = hexToRgb(c1);
+  const [r2,g2,b2] = hexToRgb(c2);
+
+  return Math.abs(r1-r2)+Math.abs(g1-g2)+Math.abs(b1-b2) < 80;
+}
+
+function tweakColor(hex) {
+  const r = parseInt(hex.substr(1,2),16);
+  const g = parseInt(hex.substr(3,2),16);
+  const b = parseInt(hex.substr(5,2),16);
+
+  const adjust = (v) => Math.min(255, Math.max(0, v + (Math.random()*20 - 10)));
+
+  return `rgb(${adjust(r)}, ${adjust(g)}, ${adjust(b)})`;
+}
+
+function getRandomColor() {
+  let color;
+  let attempts = 0;
+
+  do {
+    color = colors[Math.floor(Math.random() * colors.length)];
+    attempts++;
+  } while ((color === lastColor || isSimilar(color, lastColor)) && attempts < 10);
+
+  lastColor = color;
+  return tweakColor(color);
+}
+
+function getTextColor(bg) {
+  const rgb = bg.match(/\d+/g);
+  const brightness = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114)/1000;
+  return brightness > 150 ? "#333" : "#fff";
+}
+
+// ================= 网格 =================
+const COLS = 8;
+const ROWS = 6;
+
+let grid = [];
+let used = new Set();
+
+function initGrid() {
+  grid = [];
+  used.clear();
+  for (let r=0;r<ROWS;r++){
+    for (let c=0;c<COLS;c++){
+      grid.push({r,c});
+    }
+  }
+}
+
+function getGridPos() {
+  if (used.size >= grid.length) used.clear();
+
+  let i;
+  do {
+    i = Math.floor(Math.random()*grid.length);
+  } while (used.has(i));
+
+  used.add(i);
+
+  const {r,c} = grid[i];
+  const w = 100/COLS;
+  const h = 100/ROWS;
+
+  const offsetX = Math.random()*0.6+0.2;
+  const offsetY = Math.random()*0.6+0.2;
+
+  return {
+    left:(c+offsetX)*w,
+    top:(r+offsetY)*h
+  };
+}
+
+// ================= 拖动 =================
+function makeDraggable(el){
+  let dragging=false,ox=0,oy=0;
+
+  el.onmousedown=e=>{
+    dragging=true;
+    ox=e.clientX-el.offsetLeft;
+    oy=e.clientY-el.offsetTop;
+    el.style.zIndex=9999;
+    el.style.cursor="grabbing";
+  };
+
+  document.onmousemove=e=>{
+    if(!dragging)return;
+    el.style.left=e.clientX-ox+"px";
+    el.style.top=e.clientY-oy+"px";
+  };
+
+  document.onmouseup=()=>{
+    dragging=false;
+    el.style.cursor="grab";
+  };
+}
+
+// ================= 弹窗 =================
+function createPopup(){
+  const popup=document.createElement("div");
+  const bg=getRandomColor();
+
+  popup.textContent=texts[Math.floor(Math.random()*texts.length)];
+  popup.style.background=bg;
+  popup.style.color=getTextColor(bg);
+
+  const pos=getGridPos();
+
+  // ⭐ 防溢出
+  const maxLeft = 90; 
+  const maxTop = 90;
+
+  popup.style.position="fixed";
+  popup.style.left=Math.min(pos.left,maxLeft)+"vw";
+  popup.style.top=Math.min(pos.top,maxTop)+"vh";
+
+  popup.style.padding="12px 20px";
+  popup.style.borderRadius="12px";
+  popup.style.fontSize="18px";
+  popup.style.boxShadow="0 8px 20px rgba(0,0,0,0.4)";
+  popup.style.cursor="grab";
+
+  // ⭐ 不换行核心
+  popup.style.whiteSpace="nowrap";
+  popup.style.maxWidth="60vw";
+  popup.style.overflow="hidden";
+  popup.style.textOverflow="ellipsis";
+
+  popup.style.opacity="0";
+  popup.style.transform="translateY(10px)";
+  popup.style.transition="all 0.4s ease";
+  popup.style.userSelect="none";
+
+  document.body.appendChild(popup);
+
+  requestAnimationFrame(()=>{
+    popup.style.opacity="1";
+    popup.style.transform="translateY(0)";
+  });
+
+  makeDraggable(popup);
+
+  let moved=false;
+  popup.onmousedown=()=>moved=false;
+  popup.onmousemove=()=>moved=true;
+
+  popup.onclick=()=>{
+    if(moved)return;
+    popup.style.opacity="0";
+    popup.style.transform="scale(0.8)";
+    setTimeout(()=>popup.remove(),300);
+  };
+}
+
+// ================= 启动 =================
+function startPopups(){
+  initGrid();
+  let count=0;
+  const timer=setInterval(()=>{
+    createPopup();
+    if(++count>=150) clearInterval(timer);
+  },80);
+}
+
+// ================= 弹窗 =================
+function createConfirmModal(){
+  const overlay=document.createElement("div");
+  overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;";
+
+  const modal=document.createElement("div");
+  modal.style.cssText="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:24px;border-radius:16px;color:#fff;text-align:center;";
+
+  modal.innerHTML=`
+    <div style="font-size:24px;margin-bottom:20px;">🍹 要开始你的治愈弹窗吗？</div>
+    <button id="ok" style="margin-right:10px;padding:8px 16px;border:none;border-radius:8px;">开始</button>
+    <button id="no" style="padding:8px 16px;border:none;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;">取消</button>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector("#ok").onclick=()=>{
+    overlay.remove();
+    startPopups();
+  };
+  modal.querySelector("#no").onclick=()=>overlay.remove();
+}
+
+window.onload=createConfirmModal;
+
+</script>
+</body>
+</html>

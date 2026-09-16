@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>倒计时</title>
+  <script src="../lib/global.js?v=20260129"></script>
+  <script src="../lib/crypto-js.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --fg: #16181d;
+      --muted: #8b9198;
+      --chip: #eceef1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e0f11;
+        --fg: #f2f3f5;
+        --muted: #7d838b;
+        --chip: #1c1e22;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--fg);
+      /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif; */
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",
+                "Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      transition: background .3s ease, color .3s ease;
+    }
+
+    /* 顶部小字 */
+    .caption {
+      margin: 0 0 clamp(24px, 5vw, 20px);
+      font-size: clamp(12px, 3.2vw, 14px);
+      letter-spacing: .16em;
+      text-indent: .16em;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* 三块色块容器：一行排布，不换行 */
+    .clock {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: clamp(8px, 2vw, 16px);
+      width: min(620px, 100%);
+    }
+
+    /* 每个色块：数字 + 单位，横向并排 */
+    .chip {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      /* 关键：数字和单位不换行 */
+      align-items: baseline;
+      justify-content: center;
+      gap: .18em;
+      padding: clamp(14px, 3.5vw, 26px) clamp(6px, 1.5vw, 14px);
+      background: var(--chip);
+      border-radius: clamp(12px, 2.5vw, 18px);
+      white-space: nowrap;
+      transition: background .3s ease;
+    }
+
+    /* 数字 */
+    .num {
+      font-size: clamp(30px, 8.5vw, 60px);
+      font-weight: 200;
+      line-height: 1;
+      letter-spacing: -.02em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    /* 单位 */
+    .unit {
+      font-size: clamp(11px, 2.6vw, 16px);
+      letter-spacing: .05em;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <p class="caption" id="caption">加载中…</p>
+
+  <div class="clock">
+    <div class="chip">
+      <span class="num" id="days">00</span><span class="unit">天</span>
+    </div>
+    <div class="chip">
+      <span class="num" id="hours">00</span><span class="unit">时</span>
+    </div>
+    <div class="chip">
+      <span class="num" id="minutes">00</span><span class="unit">分</span>
+    </div>
+  </div>
+
+  <script>
+      const params = getAllParams(CryptoJS);
+      handleDarkMode(params);
+      console.log(params)
+      // const params = {day: '2027-12-19'}
+    /* ==========================================================
+       配置区：只改这里就行
+       target —— 目标时间，格式 "YYYY-MM-DDTHH:mm:ss"（按本地时间解析）
+       ========================================================== */
+    const CONFIG = {
+      target: params.day ? params.day + 'T08:30:00': '2027-12-19T08:30:00',
+      title: params.title ? params.title : '2028考研'
+    };
+    /* ========================================================== */
+
+    const pad = n => String(n).padStart(2, '0');
+
+    const el = {
+      caption: document.getElementById('caption'),
+      days: document.getElementById('days'),
+      hours: document.getElementById('hours'),
+      minutes: document.getElementById('minutes')
+    };
+
+    const TARGET = new Date(CONFIG.target);
+    const TARGET_MS = TARGET.getTime();
+
+    // 顶部文字：距离 X 年 X 月 X 日 HH:mm 还有
+    (function renderCaption() {
+      const y = TARGET.getFullYear();
+      const m = TARGET.getMonth() + 1;
+      const d = TARGET.getDate();
+      const hh = pad(TARGET.getHours());
+      const mm = pad(TARGET.getMinutes());
+      el.caption.textContent = `距离「${CONFIG.title}」（${y}年${m}月${d}日${hh}:${mm}）还有`;
+    })();
+
+    function tick() {
+      const diff = TARGET_MS - Date.now();
+
+      // 倒计时结束
+      if (diff <= 0) {
+        el.days.textContent = '00';
+        el.hours.textContent = '00';
+        el.minutes.textContent = '00';
+        el.caption.textContent = '时间到';
+        clearInterval(timer);
+        return;
+      }
+
+      // 只精确到分钟，秒数直接舍去
+      const totalMinutes = Math.floor(diff / 60000);
+
+      const days = Math.floor(totalMinutes / 1440);
+      const hours = Math.floor((totalMinutes % 1440) / 60);
+      const minutes = totalMinutes % 60;
+
+      el.days.textContent = pad(days);
+      el.hours.textContent = pad(hours);
+      el.minutes.textContent = pad(minutes);
+    }
+
+    tick();
+    const timer = setInterval(tick, 250);
+
+    // 页面从后台切回来时立即刷新，避免显示旧数据
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) tick();
+    });
+  </script>
+</body>
+
+</html>
